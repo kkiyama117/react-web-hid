@@ -16,17 +16,20 @@ import * as React from "react";
   }
 })();
 
-export type WebhidProps = Omit<React.HTMLProps<HTMLElement>, "ref"> & {}
+export type WebhidProps = Omit<React.HTMLProps<HTMLElement>, "ref"> & {
+  vendorId?: number;
+  deviceId?: number;
+}
 
 interface WebhidState {
-  isConnected: false
+  isConnected: false,
 }
 
 export default class Webhid extends React.Component<WebhidProps, WebhidState> {
   constructor(props: WebhidProps) {
     super(props);
     this.state = {
-      isConnected: false
+      isConnected: false,
     };
   }
 
@@ -38,6 +41,8 @@ export default class Webhid extends React.Component<WebhidProps, WebhidState> {
     const {state, props} = this;
 
     const {
+      vendorId,
+      deviceId,
       ...rest
     } = props;
 
@@ -56,3 +61,4 @@ export default class Webhid extends React.Component<WebhidProps, WebhidState> {
     }
   }
 }
+
