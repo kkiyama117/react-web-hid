@@ -6,5 +6,8 @@
   "repository": "git@github.com:kkiyama117/react-web-hid.git",
   "author": "kkiyama117 <k.kiyama117@gmail.com>",
   "license": "GPLv3",
-  "private": false
+  "private": false,
+  "devDependencies": {
+    "typescript": "^4.1.3"
+  }
 }
