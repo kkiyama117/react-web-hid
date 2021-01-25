@@ -7,6 +7,10 @@
   "author": "kkiyama117 <k.kiyama117@gmail.com>",
   "license": "GPLv3",
   "private": false,
+  "peerDependencies": {
+    "react": ">=17.0.0",
+    "react-dom": ">=17.0.0"
+  },
   "devDependencies": {
     "typescript": "^4.1.3"
   }
