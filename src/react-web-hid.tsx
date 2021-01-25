@@ -8,7 +8,8 @@ import * as React from "react";
   // Older browsers might not implement HID at all, so we set an empty object first
   // Some browsers just don't implement it - return a rejected promise with an error
   // to keep a consistent interface
-  if (chrome.hid.getDevices === undefined) {
+  if (!("hid" in navigator)) {
+    (navigator as any).hid = {};
     return Promise.reject(
       new Error("HID is not implemented in this browser")
     );
@@ -18,10 +19,40 @@ import * as React from "react";
 export type WebhidProps = Omit<React.HTMLProps<HTMLElement>, "ref"> & {}
 
 interface WebhidState {
+  isConnected: false
 }
 
 export default class Webhid extends React.Component<WebhidProps, WebhidState> {
+  constructor(props: WebhidProps) {
+    super(props);
+    this.state = {
+      isConnected: false
+    };
+  }
+
+  componentDidMount() {
+    const {state, props} = this;
+  }
+
   render() {
+    const {state, props} = this;
+
+    const {
+      ...rest
+    } = props;
+
     return (<div>WIP</div>);
+  }
+
+  componentWillUnmount() {
+    this.stopAndCleanup();
+  }
+
+  private stopAndCleanup() {
+    const {state} = this;
+
+    if (state.isConnected) {
+      // disconnect
+    }
   }
 }
