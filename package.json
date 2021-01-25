@@ -2,11 +2,25 @@
   "name": "react-web-hid",
   "version": "0.0.1",
   "description": "access HID devices through web-HID API from React",
-  "main": "index.js",
-  "repository": "git@github.com:kkiyama117/react-web-hid.git",
   "author": "kkiyama117 <k.kiyama117@gmail.com>",
   "license": "GPL-3.0",
   "private": false,
+  "main": "dist/react-webcam.js",
+  "types": "dist/react-webcam.d.ts",
+  "scripts": {
+    "prepublish": "npm run build:production",
+    "build": "NODE_ENV=development webpack-cli",
+    "build:production": "npm run build && NODE_ENV=production webpack-cli",
+    "lint": "eslint src/react-webcam.tsx",
+    "test": "tsc && jest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/kkiyama117/react-web-hid.git"
+  },
+  "bugs": {
+    "url": "https://github.com/kkiyama117/react-web-hid/issues"
+  },
   "peerDependencies": {
     "react": ">=17.0.0",
     "react-dom": ">=17.0.0"
