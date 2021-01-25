@@ -62,3 +62,7 @@ export default class Webhid extends React.Component<WebhidProps, WebhidState> {
   }
 }
 
+class HIDEngine {
+  
+
+}
