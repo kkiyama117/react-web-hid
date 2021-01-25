@@ -14,8 +14,10 @@
     "lib": [
       "dom",
       "es5",
-      "scripthost",
       "es6"
+    ],
+    "types": [
+      "chrome-apps"
     ]
   },
   "include": [
