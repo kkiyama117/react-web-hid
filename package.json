@@ -5,8 +5,8 @@
   "author": "kkiyama117 <k.kiyama117@gmail.com>",
   "license": "GPL-3.0",
   "private": false,
-  "main": "dist/react-webcam.js",
-  "types": "dist/react-webcam.d.ts",
+  "main": "dist/react-web-hid.js",
+  "types": "dist/react-web-hid.d.ts",
   "scripts": {
     "prepublish": "npm run build:production",
     "build": "NODE_ENV=development webpack-cli",
