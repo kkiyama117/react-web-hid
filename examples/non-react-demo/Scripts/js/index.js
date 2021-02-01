@@ -385,12 +385,31 @@ window.addEventListener('load', function (e) {
       let btn = document.getElementById('hid_open');
       if (btn) {
         btn.addEventListener('click', async function (e) {
+          // "open"ボタンをクリックしたときの処理
+          if (hid == null && !hidProcess) {
+            hidProcess = true;
 
+            try {
+              hid = new CtrlHid(HID_DEVICE_ID);
+              hid.addEventListener('disconnect', hidDisconnect);
+              await hid.open();
+            } catch (error) {
+              console.log(error);
+              if (hid) {
+                await hid.close();
+
+                hid = null;
+              }
+            } finally {
+              hidProcess = false;
+            }
+          }
+
+          updateStatus();
         });
       }
     }
 
-    {
       let btn = document.getElementById('hid_read');
       if (btn) {
         btn.addEventListener('click', async function (e) {
@@ -424,9 +443,7 @@ window.addEventListener('load', function (e) {
 
         });
       }
-    }
 
-    {
       let btn = document.getElementById('hid_on');
       if (btn) {
         btn.addEventListener('click', async function (e) {
@@ -446,8 +463,6 @@ window.addEventListener('load', function (e) {
 
         });
       }
-    }
-
     {
       let btn = document.getElementById('hid_off');
       if (btn) {
@@ -468,9 +483,7 @@ window.addEventListener('load', function (e) {
 
         });
       }
-    }
 
-    {
       let btn = document.getElementById('hid_close');
       if (btn) {
         btn.addEventListener('click', async function (e) {
@@ -491,7 +504,6 @@ window.addEventListener('load', function (e) {
           updateStatus();
         });
       }
-    }
   }
 
   /**

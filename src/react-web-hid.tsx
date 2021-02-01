@@ -28,7 +28,7 @@ interface WebhidState {
 }
 
 
-const handleClose:  React.EventHandler<any> =(e) => {
+const handleClose: React.EventHandler<any> = (e) => {
   e.preventDefault();
   console.log('The link was clicked.');
 }
@@ -39,21 +39,13 @@ async function hidDisconnect(e) {
   console.log("hid disconnect");
 
   async function closeHid() {
-    if (hid) {
-      if () {
-        try {
-          hid.removeEventListener('disconnect', hidDisconnect);
-          await hid.close();
-          hid = null;
-        } finally {
-        }
-      } else {
-        setTimeout(closeHid, 100);
-      }
+    try {
+      hid.removeEventListener('disconnect', hidDisconnect);
+      await hid.close();
+      hid = null;
+    } finally {
     }
-
     updateStatus();
-
   }
 }
 
@@ -66,23 +58,24 @@ export default class Webhid extends React.Component<WebhidProps, WebhidState> {
     };
   }
 
-  handleOpen:  React.EventHandler<any> =(e) => {
+  handleOpen: React.EventHandler<any> = (e) => {
     // "open"ボタンをクリックしたときの処理
-      try {
-        hid = new CtrlHid(HID_DEVICE_ID);
-        hid.addEventListener('disconnect', hidDisconnect);
-        await hid.open();
-      } catch (error) {
-        console.log(error);
-        if (hid) {
-          await hid.close();
+    try {
+      hid = new CtrlHid(HID_DEVICE_ID);
+      hid.addEventListener('disconnect', hidDisconnect);
+      await hid.open();
+    } catch (error) {
+      console.log(error);
+      if (hid) {
+        await hid.close();
 
-          hid = null;
-        }
-      } finally {
-        hidProcess = false;
+        hid = null;
       }
+    } finally {
+      hidProcess = false;
+    }
   }
+
   componentDidMount() {
     const {state, props} = this;
   }
@@ -98,7 +91,7 @@ export default class Webhid extends React.Component<WebhidProps, WebhidState> {
     return (
       <div>
         {/*HID OPEN*/}
-        <input type="button" value="Open"  onClick={handleOpen}/>
+        <input type="button" value="Open" onClick={this.handleOpen}/>
         {/*HID CLOSE*/}
         <input type="button" value="Close" onClick={handleClose}/>
 
