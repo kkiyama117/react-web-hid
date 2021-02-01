@@ -1,33 +1,25 @@
 import * as React from "react";
 import {HidDeviceOptions, HidDeviceFilter, HidStateMachine} from "./logic/Command";
-import {useState} from "react";
 
-interface ChromeNavigator extends Navigator{
-  hid:{
-    chrome.hid
-  }
-}
 export const WebHid = (props: WebhidProps) => {
+  if (typeof window === 'undefined') {
+    return;
+  }
 
-  (function () {
-    if (typeof window === 'undefined') {
-      return;
-    }
-
-    // Older browsers might not implement HID at all, so we set an empty object first
-    // Some browsers just don't implement it - return a rejected promise with an error
-    // to keep a consistent interface
-    if (!("hid" in navigator)) {
-      (navigator as any).hid = {};
-      return Promise.reject(
-        new Error("HID is not implemented in this browser")
-      );
-    }
-  })();
+  // Older browsers might not implement HID at all, so we set an empty object first
+  // Some browsers just don't implement it - return a rejected promise with an error
+  // to keep a consistent interface
+  if (!("hid" in navigator)) {
+    (navigator as any).hid = {};
+    return Promise.reject(
+      new Error("HID is not implemented in this browser")
+    );
+  }
 
   const createHandleOpen = (options: HidDeviceFilter): React.EventHandler<React.MouseEvent<HTMLElement>> => async (e) => {
     // "open"ボタンをクリックしたときの処理
     try {
+      // @ts-ignore
       const stateMachine: HidStateMachine = navigator.hid.getUserSelectedDevices({filter: [options]})
       await stateMachine.open();
     } catch (error) {
@@ -49,7 +41,6 @@ export const WebHid = (props: WebhidProps) => {
 }
 
 
-
 export type WebhidProps = Omit<React.HTMLProps<HTMLElement>, "ref"> & {
   deviceOptions: HidDeviceFilter;
 }
@@ -68,8 +59,6 @@ async function hidDisconnect(e) {
     console.log("hid disconnect");
   }
 }
-
-
 
 
 export default WebHid;
