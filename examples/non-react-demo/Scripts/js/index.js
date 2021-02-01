@@ -385,27 +385,7 @@ window.addEventListener('load', function (e) {
       let btn = document.getElementById('hid_open');
       if (btn) {
         btn.addEventListener('click', async function (e) {
-          // "open"ボタンをクリックしたときの処理
-          if (hid == null && !hidProcess) {
-            hidProcess = true;
 
-            try {
-              hid = new CtrlHid(HID_DEVICE_ID);
-              hid.addEventListener('disconnect', hidDisconnect);
-              await hid.open();
-            } catch (error) {
-              console.log(error);
-              if (hid) {
-                await hid.close();
-
-                hid = null;
-              }
-            } finally {
-              hidProcess = false;
-            }
-          }
-
-          updateStatus();
         });
       }
     }

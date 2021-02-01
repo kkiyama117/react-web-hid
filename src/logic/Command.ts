@@ -2,13 +2,13 @@ export const runHidCommand = (cmd: Uint8Array): any => {
   return null;
 }
 
-interface HidDeviceInfo extends chrome.hid.HidDeviceInfo {
+export interface HidDeviceInfo extends chrome.hid.HidDeviceInfo {
 }
 
-interface HidDeviceOptions extends chrome.hid.DeviceOptions {
+export interface HidDeviceOptions extends chrome.hid.DeviceOptions {
 }
 
-class HidStateMachine {
+export class HidStateMachine {
   /** Internal WebHID device */
   device?: HidDeviceInfo
   /** Raw contents of the last HID Report sent by the controller. */
@@ -24,4 +24,5 @@ class HidStateMachine {
     //   throw new Error('WebHID not supported by browser or not available.')
     // }
   }
+
 }

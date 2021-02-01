@@ -1,4 +1,5 @@
 import * as React from "react";
+import {HidStateMachine} from "./logic/Command";
 
 (function () {
   if (typeof window === 'undefined') {
@@ -23,6 +24,37 @@ export type WebhidProps = Omit<React.HTMLProps<HTMLElement>, "ref"> & {
 
 interface WebhidState {
   isConnected: false,
+  stateMachine?: HidStateMachine
+}
+
+
+const handleClose:  React.EventHandler<any> =(e) => {
+  e.preventDefault();
+  console.log('The link was clicked.');
+}
+
+
+// デバイス切断
+async function hidDisconnect(e) {
+  console.log("hid disconnect");
+
+  async function closeHid() {
+    if (hid) {
+      if () {
+        try {
+          hid.removeEventListener('disconnect', hidDisconnect);
+          await hid.close();
+          hid = null;
+        } finally {
+        }
+      } else {
+        setTimeout(closeHid, 100);
+      }
+    }
+
+    updateStatus();
+
+  }
 }
 
 export default class Webhid extends React.Component<WebhidProps, WebhidState> {
@@ -30,9 +62,27 @@ export default class Webhid extends React.Component<WebhidProps, WebhidState> {
     super(props);
     this.state = {
       isConnected: false,
+      stateMachine: undefined
     };
   }
 
+  handleOpen:  React.EventHandler<any> =(e) => {
+    // "open"ボタンをクリックしたときの処理
+      try {
+        hid = new CtrlHid(HID_DEVICE_ID);
+        hid.addEventListener('disconnect', hidDisconnect);
+        await hid.open();
+      } catch (error) {
+        console.log(error);
+        if (hid) {
+          await hid.close();
+
+          hid = null;
+        }
+      } finally {
+        hidProcess = false;
+      }
+  }
   componentDidMount() {
     const {state, props} = this;
   }
@@ -45,20 +95,22 @@ export default class Webhid extends React.Component<WebhidProps, WebhidState> {
       deviceId,
       ...rest
     } = props;
+    return (
+      <div>
+        {/*HID OPEN*/}
+        <input type="button" value="Open"  onClick={handleOpen}/>
+        {/*HID CLOSE*/}
+        <input type="button" value="Close" onClick={handleClose}/>
 
-    return (<div>
-      <input type="button" value="Open" id="hid_open"/><input type="button" value="Close" id="hid_close"/><br/>
-
-      <br/>
-
-      <input type="button" value="リレーON" id="hid_on"/><input type="button" value="リレーOFF" id="hid_off"/><br/>
-      <input type="button" value="測定" id="hid_read"/><br/>
-      <p>測定データ : <span id="hid_data"/></p>
-      <p>温度 : <span id="hid_data_temp"/></p>
-      <p>明るさ : <span id="hid_data_light"/></p>
-      <p>人感 : <span id="hid_data_ir"/></p>
-      <hr/>
-    </div>);
+        <input type="button" value="リレーON" id="hid_on"/>
+        <input type="button" value="リレーOFF" id="hid_off"/><br/>
+        <input type="button" value="測定" id="hid_read"/><br/>
+        <p>測定データ : <span id="hid_data"/></p>
+        <p>温度 : <span id="hid_data_temp"/></p>
+        <p>明るさ : <span id="hid_data_light"/></p>
+        <p>人感 : <span id="hid_data_ir"/></p>
+        <hr/>
+      </div>);
   }
 
   componentWillUnmount() {
