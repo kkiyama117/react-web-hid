@@ -26,12 +26,12 @@
 </head>
 <body>
 <div id="root"></div>
-<script src="https://unpkg.com/react@15.5.4/dist/react.js"></script>
-<script src="https://unpkg.com/react-dom@15.5.4/dist/react-dom.js"></script>
-<script src="https://unpkg.com/prop-types@15.6.1/prop-types.js"></script>
-<script src="https://unpkg.com/babel-transform-in-browser@6.4.6/dist/btib.min.js"></script>
-<script src="../dist/react-web-hid.js"></script>
-<script type="text/es2015">
+  <script src="https://unpkg.com/react/umd/react.production.min.js"></script>
+  <script src="https://unpkg.com/react-dom/umd/react-dom.production.min.js"></script>
+  <script src="https://unpkg.com/prop-types@15.6.1/prop-types.js"></script>
+  <script src="https://unpkg.com/babel-transform-in-browser@6.4.6/dist/btib.min.js"></script>
+  <script src="../dist/react-web-hid.js"></script>
+  <script type="text/es2015">
     // getUserMedia only works for secure pages
 
     class App extends React.Component {
@@ -51,13 +51,22 @@
       render() {
         return (
           <div>
-            <h1>react-webcam</h1>
+            <h1>react-web-hid</h1>
             <Webhid
               audio={false}
               ref={node => this.webcam = node}
             />
             <div>
               <h2>CSS Filters & style prop</h2>
+            </div>
+            <div>
+              <h2>Screenshots</h2>
+              <div className='screenshots'>
+                <div className='controls'>
+                  <button onClick={this.handleClick}>capture</button>
+                </div>
+                {this.state.screenshot ? <img src={this.state.screenshot} /> : null}
+              </div>
             </div>
           </div>
         );
