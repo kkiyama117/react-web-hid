@@ -7,7 +7,19 @@
 </head>
 <body>
     <h1>プログラミングスイッチ 人感センサー版</h1>
+
     <h2>WebHID</h2>
 
+    <input type="button" value="Open" id="hid_open" /><input type="button" value="Close" id="hid_close" /><br />
+
+    <br />
+
+    <input type="button" value="リレーON" id="hid_on" /><input type="button" value="リレーOFF" id="hid_off" /><br />
+    <input type="button" value="測定" id="hid_read" /><br />
+    <p>測定データ : <span id="hid_data"></span></p>
+    <p>温度 : <span id="hid_data_temp"></span></p>
+    <p>明るさ : <span id="hid_data_light"></span></p>
+    <p>人感 : <span id="hid_data_ir"></span></p>
+    <hr />
 </body>
 </html>
