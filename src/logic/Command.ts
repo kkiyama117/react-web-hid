@@ -2,6 +2,9 @@ export const runHidCommand = (cmd: Uint8Array): any => {
   return null;
 }
 
+
+export interface HidDeviceFilter extends chrome.hid.DeviceFilter {
+}
 export interface HidDeviceInfo extends chrome.hid.HidDeviceInfo {
 }
 
@@ -55,7 +58,8 @@ export class HidStateMachine {
     }
   }
 
-  async open(device: HidDeviceInfo) {
+  async open() {
+    // const device = this.
     if (this.connectedDevice === null) {
       let ex2 = null;
       try {

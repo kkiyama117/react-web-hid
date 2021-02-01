@@ -1,5 +1,6 @@
 import * as React from "react";
-import {HidStateMachine} from "./logic/Command";
+import {HidDeviceOptions,HidDeviceFilter, HidStateMachine} from "./logic/Command";
+import {useState} from "react";
 
 (function () {
   if (typeof window === 'undefined') {
@@ -18,108 +19,45 @@ import {HidStateMachine} from "./logic/Command";
 })();
 
 export type WebhidProps = Omit<React.HTMLProps<HTMLElement>, "ref"> & {
-  vendorId?: number;
-  deviceId?: number;
+  deviceOptions: HidDeviceFilter;
 }
-
-interface WebhidState {
-  isConnected: false,
-  stateMachine?: HidStateMachine
-}
-
 
 const handleClose: React.EventHandler<any> = (e) => {
   e.preventDefault();
   console.log('The link was clicked.');
 }
 
-
 // デバイス切断
 async function hidDisconnect(e) {
-  console.log("hid disconnect");
+  try {
+    await this.connectedDevice.close();
+    this.connectedDevice = null;
+  } finally {
+    console.log("hid disconnect");
+  }
+}
+export const WebHid = (props:WebhidProps)=>{
+  return (
+    <div>
+      {/*HID OPEN*/}
+      <div onClick={createHandleOpen(props.deviceOptions)}/>
+      {/*HID CLOSE*/}
+      <div onClick={handleClose}/>
 
-  async function closeHid() {
-    try {
-      hid.removeEventListener('disconnect', hidDisconnect);
-      await hid.close();
-      hid = null;
-    } finally {
-    }
-    updateStatus();
+      <div onClick={(e) => console.log("switch on (WIP)")}/>
+      <div onClick={e => console.log("switch off (WIP)")}/>
+      <div onClick={e => console.log("read data (WIP)")}/>
+    </div>);
+}
+
+const createHandleOpen=(options:HidDeviceFilter):React.EventHandler<any> => async (e) => {
+  // "open"ボタンをクリックしたときの処理
+  try {
+    const stateMachine:HidStateMachine= e.navigator.hid.getUserSelectedDevices({filter:[options]})
+    await stateMachine.open();
+  } catch (error) {
+    console.log(error);
   }
 }
 
-export default class Webhid extends React.Component<WebhidProps, WebhidState> {
-  constructor(props: WebhidProps) {
-    super(props);
-    this.state = {
-      isConnected: false,
-      stateMachine: undefined
-    };
-  }
-
-  handleOpen: React.EventHandler<any> = (e) => {
-    // "open"ボタンをクリックしたときの処理
-    try {
-      hid = new CtrlHid(HID_DEVICE_ID);
-      hid.addEventListener('disconnect', hidDisconnect);
-      await hid.open();
-    } catch (error) {
-      console.log(error);
-      if (hid) {
-        await hid.close();
-
-        hid = null;
-      }
-    } finally {
-      hidProcess = false;
-    }
-  }
-
-  componentDidMount() {
-    const {state, props} = this;
-  }
-
-  render() {
-    const {state, props} = this;
-
-    const {
-      vendorId,
-      deviceId,
-      ...rest
-    } = props;
-    return (
-      <div>
-        {/*HID OPEN*/}
-        <input type="button" value="Open" onClick={this.handleOpen}/>
-        {/*HID CLOSE*/}
-        <input type="button" value="Close" onClick={handleClose}/>
-
-        <input type="button" value="リレーON" id="hid_on"/>
-        <input type="button" value="リレーOFF" id="hid_off"/><br/>
-        <input type="button" value="測定" id="hid_read"/><br/>
-        <p>測定データ : <span id="hid_data"/></p>
-        <p>温度 : <span id="hid_data_temp"/></p>
-        <p>明るさ : <span id="hid_data_light"/></p>
-        <p>人感 : <span id="hid_data_ir"/></p>
-        <hr/>
-      </div>);
-  }
-
-  componentWillUnmount() {
-    this.stopAndCleanup();
-  }
-
-  private stopAndCleanup() {
-    const {state} = this;
-
-    if (state.isConnected) {
-      // disconnect
-    }
-  }
-}
-
-class HIDEngine {
-
-
-}
+export default WebHid;
