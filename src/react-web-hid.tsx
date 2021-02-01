@@ -46,7 +46,19 @@ export default class Webhid extends React.Component<WebhidProps, WebhidState> {
       ...rest
     } = props;
 
-    return (<div>WIP</div>);
+    return (<div>
+      <input type="button" value="Open" id="hid_open"/><input type="button" value="Close" id="hid_close"/><br/>
+
+      <br/>
+
+      <input type="button" value="リレーON" id="hid_on"/><input type="button" value="リレーOFF" id="hid_off"/><br/>
+      <input type="button" value="測定" id="hid_read"/><br/>
+      <p>測定データ : <span id="hid_data"/></p>
+      <p>温度 : <span id="hid_data_temp"/></p>
+      <p>明るさ : <span id="hid_data_light"/></p>
+      <p>人感 : <span id="hid_data_ir"/></p>
+      <hr/>
+    </div>);
   }
 
   componentWillUnmount() {
@@ -63,6 +75,6 @@ export default class Webhid extends React.Component<WebhidProps, WebhidState> {
 }
 
 class HIDEngine {
-  
+
 
 }
