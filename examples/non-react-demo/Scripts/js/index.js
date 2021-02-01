@@ -381,129 +381,127 @@ window.addEventListener('load', function (e) {
       });
     }
 
-    {
-      let btn = document.getElementById('hid_open');
-      if (btn) {
-        btn.addEventListener('click', async function (e) {
-          // "open"ボタンをクリックしたときの処理
-          if (hid == null && !hidProcess) {
-            hidProcess = true;
+    let btn1 = document.getElementById('hid_open');
+    if (btn1) {
+      btn1.addEventListener('click', async function (e) {
+        // "open"ボタンをクリックしたときの処理
+        if (hid == null && !hidProcess) {
+          hidProcess = true;
 
-            try {
-              hid = new CtrlHid(HID_DEVICE_ID);
-              hid.addEventListener('disconnect', hidDisconnect);
-              await hid.open();
-            } catch (error) {
-              console.log(error);
-              if (hid) {
-                await hid.close();
+          try {
+            hid = new CtrlHid(HID_DEVICE_ID);
+            hid.addEventListener('disconnect', hidDisconnect);
+            await hid.open();
+          } catch (error) {
+            console.log(error);
+            if (hid) {
+              await hid.close();
 
-                hid = null;
-              }
-            } finally {
-              hidProcess = false;
+              hid = null;
             }
+          } finally {
+            hidProcess = false;
           }
+        }
 
-          updateStatus();
-        });
-      }
+        updateStatus();
+      });
     }
 
-      let btn = document.getElementById('hid_read');
-      if (btn) {
-        btn.addEventListener('click', async function (e) {
-          // "測定"ボタンをクリックしたときの処理
-          if (hid && !hidProcess) {
-            hidProcess = true;
-            try {
-              let data = await hid.sendData(HidCommand.getData());
-              console.log(data.toString());
+    let btn2 = document.getElementById('hid_read');
+    if (btn2) {
+      btn2.addEventListener('click', async function (e) {
+        // "測定"ボタンをクリックしたときの処理
+        if (hid && !hidProcess) {
+          hidProcess = true;
+          try {
+            let data = await hid.sendData(HidCommand.getData());
+            console.log(data.toString());
 
-              // 受信データを変換
-              let dv = new DataView(data.buffer);
-              hid_data_temp = dv.getInt16(5, true) / 10;
-              hid_data_light = Math.round(dv.getInt16(7, true) / 1024 * 100);
-              let ir = dv.getUint8(9);
-              if (ir) {
-                hid_data_ir = "○";
-              } else {
-                hid_data_ir = "×";
-              }
-
-              hid_data = data.toString();
-            } catch (error) {
-              console.log(error);
-            } finally {
-              hidProcess = false;
-            }
-          }
-
-          updateStatus();
-
-        });
-      }
-
-      let btn = document.getElementById('hid_on');
-      if (btn) {
-        btn.addEventListener('click', async function (e) {
-          // "リレーON"ボタンをクリックしたときの処理
-          if (hid && !hidProcess) {
-            hidProcess = true;
-
-            try {
-              let data = await hid.sendData(HidCommand.setRelay(true));
-              console.log(data);
-            } finally {
-              hidProcess = false;
-            }
-          }
-
-          updateStatus();
-
-        });
-      }
-    {
-      let btn = document.getElementById('hid_off');
-      if (btn) {
-        btn.addEventListener('click', async function (e) {
-          // "リレーOFF"ボタンをクリックしたときの処理
-          if (hid && !hidProcess) {
-            hidProcess = true;
-
-            try {
-              let data = await hid.sendData(HidCommand.setRelay(false));
-              console.log(data);
-            } finally {
-              hidProcess = false;
-            }
-          }
-
-          updateStatus();
-
-        });
-      }
-
-      let btn = document.getElementById('hid_close');
-      if (btn) {
-        btn.addEventListener('click', async function (e) {
-          // "Close"ボタンをクリックしたときの処理
-          if (hid && !hidProcess) {
-            hidProcess = true;
-
-            try {
-              hid.removeEventListener('disconnect', hidDisconnect);
-              await hid.close();
-              hid = null;
-            } finally {
-              hidProcess = false;
+            // 受信データを変換
+            let dv = new DataView(data.buffer);
+            hid_data_temp = dv.getInt16(5, true) / 10;
+            hid_data_light = Math.round(dv.getInt16(7, true) / 1024 * 100);
+            let ir = dv.getUint8(9);
+            if (ir) {
+              hid_data_ir = "○";
+            } else {
+              hid_data_ir = "×";
             }
 
+            hid_data = data.toString();
+          } catch (error) {
+            console.log(error);
+          } finally {
+            hidProcess = false;
+          }
+        }
+
+        updateStatus();
+
+      });
+    }
+
+    let btn3 = document.getElementById('hid_on');
+    if (btn3) {
+      btn3.addEventListener('click', async function (e) {
+        // "リレーON"ボタンをクリックしたときの処理
+        if (hid && !hidProcess) {
+          hidProcess = true;
+
+          try {
+            let data = await hid.sendData(HidCommand.setRelay(true));
+            console.log(data);
+          } finally {
+            hidProcess = false;
+          }
+        }
+
+        updateStatus();
+
+      });
+    }
+
+    let btn4 = document.getElementById('hid_off');
+    if (btn4) {
+      btn4.addEventListener('click', async function (e) {
+        // "リレーOFF"ボタンをクリックしたときの処理
+        if (hid && !hidProcess) {
+          hidProcess = true;
+
+          try {
+            let data = await hid.sendData(HidCommand.setRelay(false));
+            console.log(data);
+          } finally {
+            hidProcess = false;
+          }
+        }
+
+        updateStatus();
+
+      });
+    }
+
+    let btn5 = document.getElementById('hid_close');
+    if (btn5) {
+      btn5.addEventListener('click', async function (e) {
+        // "Close"ボタンをクリックしたときの処理
+        if (hid && !hidProcess) {
+          hidProcess = true;
+
+          try {
+            hid.removeEventListener('disconnect', hidDisconnect);
+            await hid.close();
+            hid = null;
+          } finally {
+            hidProcess = false;
           }
 
-          updateStatus();
-        });
-      }
+        }
+
+        updateStatus();
+      });
+    }
   }
 
   /**
@@ -533,8 +531,7 @@ window.addEventListener('load', function (e) {
         textTemp.innerHTML = hid_data_temp;
         textLight.innerHTML = hid_data_light;
         textIr.innerHTML = hid_data_ir;
-      }
-      else {
+      } else {
         btnOpen.disabled = false;
         btnClose.disabled = true;
         btnRead.disabled = true;
@@ -546,8 +543,7 @@ window.addEventListener('load', function (e) {
         textLight.innerHTML = "";
         textIr.innerHTML = "";
       }
-    }
-    else {
+    } else {
       btnOpen.disabled = true;
       btnClose.disabled = true;
       btnRead.disabled = true;
@@ -560,6 +556,7 @@ window.addEventListener('load', function (e) {
       textIr.innerHTML = "";
     }
   }
+
   // call `updateStatus`
   updateStatus();
 });
