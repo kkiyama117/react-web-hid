@@ -1,5 +1,10 @@
 import * as React from "react";
-import {HidDeviceOptions, HidDeviceFilter, HidStateMachine} from "./logic/Command";
+import {HTMLProps, useRef} from "react";
+import {HidDeviceFilter} from "./types";
+
+export type WebhidProps = Omit<HTMLProps<HTMLElement>, "ref"> & {
+  deviceOptions: HidDeviceFilter;
+}
 
 export const WebHid = (props: WebhidProps) => {
   if (typeof window === 'undefined') {
@@ -16,23 +21,25 @@ export const WebHid = (props: WebhidProps) => {
     );
   }
 
-  const createHandleOpen = (options: HidDeviceFilter): React.EventHandler<React.MouseEvent<HTMLElement>> => async (e) => {
-    // "open"ボタンをクリックしたときの処理
-    try {
-      // @ts-ignore
-      const stateMachine: HidStateMachine = navigator.hid.getUserSelectedDevices({filter: [options]})
-      await stateMachine.open();
-    } catch (error) {
-      console.log(error);
-    }
-  }
+  const openRef = useRef(null);
+
+  // const createHandleOpen = (options: HidDeviceFilter): React.EventHandler<React.MouseEvent<HTMLElement>> => async (e) => {
+  //   "open"ボタンをクリックしたときの処理
+    // try {
+    //   @ts-ignore
+      // const stateMachine: HidStateMachine = navigator.hid.getUserSelectedDevices({filter: [options]})
+      // await stateMachine.open();
+    // } catch (error) {
+    //   console.log(error);
+    // }
+  // }
 
   return (
     <div>
       {/*HID OPEN*/}
-      <div onClick={createHandleOpen(props.deviceOptions)}/>
+      <div ref={openRef}/>
       {/*HID CLOSE*/}
-      <div onClick={handleClose}/>
+      {/*<div onClick={handleClose}/>*/}
 
       <div onClick={(e) => console.log("switch on (WIP)")}/>
       <div onClick={(e) => console.log("switch off (WIP)")}/>
@@ -41,14 +48,11 @@ export const WebHid = (props: WebhidProps) => {
 }
 
 
-export type WebhidProps = Omit<React.HTMLProps<HTMLElement>, "ref"> & {
-  deviceOptions: HidDeviceFilter;
-}
 
-const handleClose: React.EventHandler<any> = (e) => {
-  e.preventDefault();
-  console.log('The link was clicked.');
-}
+// const handleClose: React.EventHandler<any> = (e) => {
+//   e.preventDefault();
+//   console.log('The link was clicked.');
+// }
 
 // デバイス切断
 async function hidDisconnect(e) {
@@ -59,6 +63,5 @@ async function hidDisconnect(e) {
     console.log("hid disconnect");
   }
 }
-
 
 export default WebHid;

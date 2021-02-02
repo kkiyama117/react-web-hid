@@ -15,7 +15,6 @@ let cmdPhase = {
 }
 
 class HidCommand {
-
   constructor(cmd, response) {
     this._cmd = cmd;
     this._response = response;
@@ -30,7 +29,6 @@ class HidCommand {
   }
 
   static getData() {
-
     let data = new Uint8Array(HID_REPORT_SIZE);
     data[0] = 0x3a;
 
@@ -38,10 +36,8 @@ class HidCommand {
   }
 
   static setRelay(on) {
-
     let data = new Uint8Array(HID_REPORT_SIZE);
     data[0] = 0x39;
-
     if (on) {
       data[1] = 0x01;
     } else {
@@ -56,9 +52,7 @@ class HidCommand {
  * WebHIDを使ったプログラミングスイッチデバイス通信
  */
 class CtrlHid {
-
   constructor({vendorId = 0x0, productId = 0x0}) {
-
     if (!("hid" in navigator)) {
       throw new Error('WebHID is not supported.')
     }
@@ -174,7 +168,7 @@ class CtrlHid {
         navigator.hid.addEventListener("disconnect", this._funcDisconnect);
 
         let devices = await navigator.hid.requestDevice({filters: [filter]})
-        if (devices != null && devices.length > 0) {
+        if (devices !== null && devices.length > 0) {
           this._device = devices[0];
           this._device.addEventListener('inputreport', this._funcInputreport);
 
@@ -197,9 +191,7 @@ class CtrlHid {
             this._device.close();
           }
         } catch (error) {
-
         }
-
         throw ex2;
       }
     }
@@ -258,7 +250,6 @@ class CtrlHid {
   }
 
   async sendTimeout_() {
-
     if (this._timeout_id != null) {
       this._timeout_id = null;
 
@@ -269,16 +260,12 @@ class CtrlHid {
         reject(new Error('serial send timeout'));
       }
     }
-
   }
 
   async sendTask_() {
-
     console.log('Enter sendTask');
-
     try {
       while (true) {
-
         if (this._cmdPhase == cmdPhase.Idle && this._sendCmdList.length > 0) {
           this._sendCmd = this._sendCmdList.shift()
           if (this._sendCmd.response) {
@@ -322,7 +309,6 @@ class CtrlHid {
   }
 
   async sendData(cmd) {
-
     let param = {
       data: cmd.cmd,
       response: cmd.response,
@@ -332,20 +318,15 @@ class CtrlHid {
 
     let _this = this;
     let p = new Promise(function (resolve, reject) {
-
       param.resolve = resolve;
       param.reject = reject;
-
       _this._sendCmdList.push(param);
-
     });
-
     return p;
   }
 }
 
 window.addEventListener('load', function (e) {
-
   let hid = null;
   let hid_data = null;
   let hid_data_temp = null;
@@ -375,9 +356,7 @@ window.addEventListener('load', function (e) {
             setTimeout(closeHid, 100);
           }
         }
-
         updateStatus();
-
       });
     }
 
