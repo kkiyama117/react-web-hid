@@ -1,53 +1,104 @@
 import * as React from "react";
-import {HTMLProps, useRef} from "react";
-import {HidDeviceFilter} from "./types";
+import {HTMLProps, useEffect, useRef, useState} from "react";
+import {getDataArray, HID_REPORT_ID, HID_TEST_DEVICE_ID, setRelayArray} from "./test_data";
+import {HIDConnectionEvent, HIDDevice, HIDDeviceFilter, HIDInputReportEvent, NavigatorWithHID} from "./types";
+
+const sleep = milliSec => new Promise(resolve => setTimeout(resolve, milliSec));
 
 export type WebhidProps = Omit<HTMLProps<HTMLElement>, "ref"> & {
-  deviceOptions: HidDeviceFilter;
+  deviceOptions: HIDDeviceFilter;
+}
+
+const getUserDevices = async (n: NavigatorWithHID): Promise<HIDDevice[] | undefined> => {
+  try {
+    return n.hid.requestDevice({filters: [HID_TEST_DEVICE_ID]});
+  } catch (error) {
+    // TODO: error handling
+    console.log(error);
+  }
+}
+
+const openConnection = async (device: HIDDevice) => {
+  try {
+    await device?.open();
+  } catch (e) {
+    // TODO: error handling
+    console.error(e);
+  }
 }
 
 export const WebHid = (props: WebhidProps) => {
-  if (typeof window === 'undefined') {
-    return;
+  const [device, setDevice] = useState<HIDDevice>();
+  const cRef = useRef(null);
+
+  useEffect(() => {
+    // TODO: use ref?
+    // https://reactjs.org/docs/react-component.html
+    checkHidAvailable();
+    // @ts-ignore
+    device?.oninputreport = handleReceiveReport;
+    // @ts-ignore
+    (navigator as NavigatorWithHID).hid.addEventListener('inputreport', handleReceiveReport);
+    return () => {
+      // Clean up the subscription
+      (navigator as NavigatorWithHID).hid.removeEventListener('inputreport', handleReceiveReport);
+      // @ts-ignore
+      device?.removeEventListener('inputreport', handleReceiveReport);
+    };
+  }, [device]);
+
+  const checkHidAvailable = () => {
+    // Older browsers might not implement HID at all, so we set an empty object first
+    // Some browsers just don't implement it - return a rejected promise with an error
+    // to keep a consistent interface
+    if (!("hid" in navigator)) {
+      throw new Error("HID is not implemented in this browser")
+    }
   }
 
-  // Older browsers might not implement HID at all, so we set an empty object first
-  // Some browsers just don't implement it - return a rejected promise with an error
-  // to keep a consistent interface
-  if (!("hid" in navigator)) {
-    (navigator as any).hid = {};
-    return Promise.reject(
-      new Error("HID is not implemented in this browser")
-    );
+  // OPEN ====================================================================
+  const handleOpen: React.EventHandler<any> = async (e) => {
+    const devices: HIDDevice[] | undefined = await getUserDevices(navigator as NavigatorWithHID);
+    if (devices) {
+      const _device = devices[0];
+      await openConnection(_device);
+      setDevice(_device);
+
+    } else {
+      console.error("Device is not found.")
+    }
+  };
+
+  // SEND ====================================================================
+  const sendReport = async (reportId: number, data: BufferSource): Promise<void> => {
+    try {
+      await device?.sendReport(reportId, data);// 0x01 = enable, 0x00 = disable
+    } catch (e) {
+      // Todo: handle error
+      console.error(e);
+    }
   }
 
-  const openRef = useRef(null);
-
-  // const createHandleOpen = (options: HidDeviceFilter): React.EventHandler<React.MouseEvent<HTMLElement>> => async (e) => {
-  //   "open"ボタンをクリックしたときの処理
-    // try {
-    //   @ts-ignore
-      // const stateMachine: HidStateMachine = navigator.hid.getUserSelectedDevices({filter: [options]})
-      // await stateMachine.open();
-    // } catch (error) {
-    //   console.log(error);
-    // }
-  // }
+  // RECEIVE =================================================================
+  const handleReceiveReport = (e: HIDInputReportEvent): void => {
+    console.log(e.device.productName + ": got input report " + e.reportId);
+    console.log(new Uint8Array(e.data.buffer));
+  }
 
   return (
     <div>
+      <div ref={cRef}/>
       {/*HID OPEN*/}
-      <div ref={openRef}/>
+      <div onClick={handleOpen}>Open</div>
+      <div>Current device: {device?.productName}</div>
       {/*HID CLOSE*/}
       {/*<div onClick={handleClose}/>*/}
 
-      <div onClick={(e) => console.log("switch on (WIP)")}/>
-      <div onClick={(e) => console.log("switch off (WIP)")}/>
-      <div onClick={(e) => console.log("read data (WIP)")}/>
+      <div onClick={(e) => sendReport(HID_REPORT_ID, setRelayArray(true))}>On</div>
+      <div onClick={(e) => sendReport(HID_REPORT_ID, setRelayArray(false))}>Off</div>
+      <div onClick={(e) => sendReport(HID_REPORT_ID, getDataArray())}>Read data</div>
     </div>);
 }
-
-
 
 // const handleClose: React.EventHandler<any> = (e) => {
 //   e.preventDefault();

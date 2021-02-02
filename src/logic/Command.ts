@@ -1,8 +1,8 @@
 // import {HidDeviceInfo, HidDeviceOptions} from "../types";
 //
-export const runHidCommand = (cmd: Uint8Array): any => {
-  return null;
-}
+// export const runHidCommand = (cmd: Uint8Array): any => {
+//   return null;
+// }
 //
 // type HidPhase = "Disconnected" | "Idle" | "Sending" | "Receiving";
 //

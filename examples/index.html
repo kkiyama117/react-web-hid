@@ -56,18 +56,6 @@
               audio={false}
               ref={node => this.webcam = node}
             />
-            <div>
-              <h2>CSS Filters & style prop</h2>
-            </div>
-            <div>
-              <h2>Screenshots</h2>
-              <div className='screenshots'>
-                <div className='controls'>
-                  <button onClick={this.handleClick}>capture</button>
-                </div>
-                {this.state.screenshot ? <img src={this.state.screenshot} /> : null}
-              </div>
-            </div>
           </div>
         );
       }

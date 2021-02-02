@@ -9,6 +9,7 @@
   "types": "dist/react-web-hid.d.ts",
   "scripts": {
     "prepublish": "npm run build:production",
+    "watch": "npm run build watch",
     "build": "NODE_ENV=development webpack-cli",
     "build:production": "npm run build && NODE_ENV=production webpack-cli",
     "lint": "eslint src/**/*.ts src/**/*.tsx",

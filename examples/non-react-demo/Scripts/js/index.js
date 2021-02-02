@@ -162,7 +162,7 @@ class CtrlHid {
 
       let ex2 = null;
       try {
-        const filter = {vendorId: this.vendorId, vroductId: this.productId};
+        const filter = {vendorId: this.vendorId, productId: this.productId};
         this._taskKill = false;
 
         navigator.hid.addEventListener("disconnect", this._funcDisconnect);
@@ -266,7 +266,7 @@ class CtrlHid {
     console.log('Enter sendTask');
     try {
       while (true) {
-        if (this._cmdPhase == cmdPhase.Idle && this._sendCmdList.length > 0) {
+        if (this._cmdPhase === cmdPhase.Idle && this._sendCmdList.length > 0) {
           this._sendCmd = this._sendCmdList.shift()
           if (this._sendCmd.response) {
             this._cmdPhase = cmdPhase.Sending;
@@ -411,46 +411,6 @@ window.addEventListener('load', function (e) {
             hid_data = data.toString();
           } catch (error) {
             console.log(error);
-          } finally {
-            hidProcess = false;
-          }
-        }
-
-        updateStatus();
-
-      });
-    }
-
-    let btn3 = document.getElementById('hid_on');
-    if (btn3) {
-      btn3.addEventListener('click', async function (e) {
-        // "リレーON"ボタンをクリックしたときの処理
-        if (hid && !hidProcess) {
-          hidProcess = true;
-
-          try {
-            let data = await hid.sendData(HidCommand.setRelay(true));
-            console.log(data);
-          } finally {
-            hidProcess = false;
-          }
-        }
-
-        updateStatus();
-
-      });
-    }
-
-    let btn4 = document.getElementById('hid_off');
-    if (btn4) {
-      btn4.addEventListener('click', async function (e) {
-        // "リレーOFF"ボタンをクリックしたときの処理
-        if (hid && !hidProcess) {
-          hidProcess = true;
-
-          try {
-            let data = await hid.sendData(HidCommand.setRelay(false));
-            console.log(data);
           } finally {
             hidProcess = false;
           }
