@@ -12,7 +12,8 @@
     "watch": "npm run build watch",
     "build": "NODE_ENV=development webpack-cli",
     "build:production": "npm run build && NODE_ENV=production webpack-cli",
-    "lint": "eslint src/**/*.ts src/**/*.tsx",
+    "lint": "eslint --fix src/**/*.ts src/**/*.tsx",
+    "lint_types": "eslint --fix types/**/*.ts",
     "test": "tsc && jest"
   },
   "repository": {

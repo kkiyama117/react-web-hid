@@ -1,15 +1,10 @@
 import * as React from "react";
 import {HTMLProps, useEffect, useRef, useState} from "react";
 import {getDataArray, HID_REPORT_ID, HID_TEST_DEVICE_ID, setRelayArray} from "./test_data";
-import {HIDConnectionEvent, HIDDevice, HIDDeviceFilter, HIDInputReportEvent, NavigatorWithHID} from "./types";
 
 const sleep = milliSec => new Promise(resolve => setTimeout(resolve, milliSec));
 
-export type WebhidProps = Omit<HTMLProps<HTMLElement>, "ref"> & {
-  deviceOptions: HIDDeviceFilter;
-}
-
-const getUserDevices = async (n: NavigatorWithHID): Promise<HIDDevice[] | undefined> => {
+const getUserDevices = async (n: Navigator): Promise<HIDDevice[] | undefined> => {
   try {
     return n.hid.requestDevice({filters: [HID_TEST_DEVICE_ID]});
   } catch (error) {
@@ -27,7 +22,7 @@ const openConnection = async (device: HIDDevice) => {
   }
 }
 
-export const WebHid = (props: WebhidProps) => {
+export const WebHid = (props) => {
   const [device, setDevice] = useState<HIDDevice>();
   const cRef = useRef(null);
 
@@ -35,14 +30,12 @@ export const WebHid = (props: WebhidProps) => {
     // TODO: use ref?
     // https://reactjs.org/docs/react-component.html
     checkHidAvailable();
-    // @ts-ignore
-    device?.oninputreport = handleReceiveReport;
-    // @ts-ignore
-    (navigator as NavigatorWithHID).hid.addEventListener('inputreport', handleReceiveReport);
+    if(device){
+      device.addEventListener('inputreport', handleReceiveReport);
+    }
+    (navigator as Navigator).hid.addEventListener('inputreport', handleReceiveReport);
     return () => {
       // Clean up the subscription
-      (navigator as NavigatorWithHID).hid.removeEventListener('inputreport', handleReceiveReport);
-      // @ts-ignore
       device?.removeEventListener('inputreport', handleReceiveReport);
     };
   }, [device]);
@@ -58,7 +51,7 @@ export const WebHid = (props: WebhidProps) => {
 
   // OPEN ====================================================================
   const handleOpen: React.EventHandler<any> = async (e) => {
-    const devices: HIDDevice[] | undefined = await getUserDevices(navigator as NavigatorWithHID);
+    const devices: HIDDevice[] | undefined = await getUserDevices(navigator as Navigator);
     if (devices) {
       const _device = devices[0];
       await openConnection(_device);

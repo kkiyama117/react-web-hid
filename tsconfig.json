@@ -1,5 +1,7 @@
 {
   "compilerOptions": {
+    "paths": {"w3c-web-hid": ["types/w3c-web-hid"]},
+    "baseUrl": "./",
     "outDir": "./dist/",
     "sourceMap": true,
     "strictNullChecks": true,
@@ -16,11 +18,9 @@
       "es5",
       "es6"
     ],
-    "types": [
-      "chrome-apps"
-    ]
   },
   "include": [
-    "./src/"
+    "./src/",
+    "types/w3c-web-hid/index.d.ts"
   ]
 }
