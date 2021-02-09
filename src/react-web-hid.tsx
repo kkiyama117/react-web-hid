@@ -33,10 +33,11 @@ export const WebHid = (props) => {
     if(device){
       device.addEventListener('inputreport', handleReceiveReport);
     }
-    (navigator as Navigator).hid.addEventListener('inputreport', handleReceiveReport);
     return () => {
       // Clean up the subscription
-      device?.removeEventListener('inputreport', handleReceiveReport);
+      if(device){
+        device?.removeEventListener('inputreport', handleReceiveReport);
+      }
     };
   }, [device]);
 

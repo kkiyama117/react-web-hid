@@ -1,7 +1,5 @@
 {
   "compilerOptions": {
-    "paths": {"w3c-web-hid": ["types/w3c-web-hid"]},
-    "baseUrl": "./",
     "outDir": "./dist/",
     "sourceMap": true,
     "strictNullChecks": true,
@@ -21,6 +19,5 @@
   },
   "include": [
     "./src/",
-    "types/w3c-web-hid/index.d.ts"
   ]
 }
